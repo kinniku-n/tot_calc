@@ -180,6 +180,10 @@
         display: flex;
         gap: 5px;
       }
+      /* 修正: 集結呼びかけボタン下の余白 */
+      #call-to-action-btn {
+        margin-bottom: 12px;
+      }
     </style>
   </head>
   <body>
@@ -200,11 +204,15 @@
             <label>集結待機時間</label>
             <div class="radio-group" id="rally-time-radios">
               <label
-                ><input type="radio" name="rally-time" value="300" checked />
-                5分</label
+                ><input
+                  type="radio"
+                  name="rally-time"
+                  value="300"
+                  checked
+                />5分</label
               >
               <label
-                ><input type="radio" name="rally-time" value="60" /> 1分</label
+                ><input type="radio" name="rally-time" value="60" />1分</label
               >
             </div>
           </div>
@@ -376,6 +384,10 @@
             parseInt(arrivalHourSelect.value) * 3600 +
             parseInt(arrivalMinuteSelect.value) * 60 +
             parseInt(arrivalSecondSelect.value);
+
+          let earliestTimeSec = 86400;
+          let earliestName = "";
+
           document
             .querySelectorAll(".player-input-container")
             .forEach((p, idx) => {
@@ -386,6 +398,10 @@
               const s = parseInt(p.querySelector(".sec-select").value) || 0;
               let dep = arrivalSeconds - (m * 60 + s) - rallyTime;
               if (dep < 0) dep += 86400;
+              if (dep < earliestTimeSec) {
+                earliestTimeSec = dep;
+                earliestName = name;
+              }
               const hh = String(Math.floor(dep / 3600) % 24).padStart(2, "0");
               const mm = String(Math.floor((dep % 3600) / 60)).padStart(2, "0");
               const ss = String(dep % 60).padStart(2, "0");
@@ -395,6 +411,20 @@
               li.textContent = `${name} の集結開始時間: ${hh}:${mm}:${ss}`;
               resultList.appendChild(li);
             });
+
+          // 一番早い人の時間差（分）
+          const now = new Date();
+          const nowSec =
+            now.getUTCHours() * 3600 +
+            now.getUTCMinutes() * 60 +
+            now.getUTCSeconds();
+          let diffSec = earliestTimeSec - nowSec;
+          if (diffSec < 0) diffSec += 86400;
+          const diffMin = Math.ceil(diffSec / 60);
+          calculatedResults.push(
+            `最初に集結できるのは ${earliestName} で、今から約 ${diffMin}分後です。`
+          );
+
           copyButton.style.display = calculatedResults.length
             ? "block"
             : "none";
@@ -426,3 +456,6 @@
     </script>
   </body>
 </html>
+
+
+
