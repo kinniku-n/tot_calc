@@ -13,13 +13,13 @@
     <style>
       /* --- デザイン設定 --- */
       :root {
-        --primary-color: #4092ff; /* 青色を調整 */
+        --primary-color: #4092ff;
         --secondary-color: #6c757d;
-        --danger-color: #f75555; /* 赤色を調整 */
-        --background-color: #1f2129; /* 背景色をダーク系に */
-        --surface-color: #2a2d38; /* カード背景色を調整 */
-        --text-color: #e0e0e0; /* 文字色を明るく */
-        --border-color: #3b3f4d; /* 枠線色を調整 */
+        --danger-color: #f75555;
+        --background-color: #1f2129;
+        --surface-color: #2a2d38;
+        --text-color: #e0e0e0;
+        --border-color: #3b3f4d;
         --border-radius: 8px;
         --font-family: "Noto Sans JP", sans-serif;
       }
@@ -30,13 +30,13 @@
         padding: 0;
         font-family: var(--font-family);
         background-color: var(--background-color);
-        color: var(--text-color); /* 全体の文字色に適用 */
+        color: var(--text-color);
       }
       .container {
         max-width: 400px;
         min-height: 100vh;
         margin: 0 auto;
-        background-color: #23252d; /* ページ背景色を調整 */
+        background-color: #23252d;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         display: flex;
         flex-direction: column;
@@ -53,7 +53,7 @@
       }
       .page-title {
         text-align: center;
-        color: #fff; /* タイトル文字色を白に */
+        color: #fff;
         margin-top: 0;
         margin-bottom: 16px;
         font-size: 1.3em;
@@ -104,7 +104,7 @@
         font-weight: 700;
         cursor: pointer;
         transition: transform 0.1s, filter 0.1s;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 影を追加 */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       }
       .btn-primary {
         background-color: var(--primary-color);
@@ -129,7 +129,7 @@
       }
       .player-input-container {
         background-color: var(--surface-color);
-        border: 1px solid #485c7d; /* 枠線色を調整 */
+        border: 1px solid #485c7d;
         border-radius: var(--border-radius);
         padding: 12px;
         margin-bottom: 10px;
@@ -138,15 +138,21 @@
       }
       .remove-player-btn {
         position: absolute;
-        top: 5px;
-        right: 5px;
-        font-size: 1.5em;
-        background: none;
-        border: none;
-        color: var(--danger-color);
+        top: -8px; /* 上に少しはみ出すように調整 */
+        right: -8px; /* 右に少しはみ出すように調整 */
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: var(--danger-color);
+        color: white;
+        font-size: 1.2em;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 2px solid var(--background-color); /* 背景色と同じボーダーを追加 */
         cursor: pointer;
-        padding: 0;
-        line-height: 1;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       }
       .result-list {
         margin-top: 20px;
@@ -154,12 +160,12 @@
         list-style: none;
       }
       .result-item {
-        background-color: #3b3f4d; /* 結果アイテムの背景色を調整 */
+        background-color: #3b3f4d;
         padding: 10px;
         border-radius: var(--border-radius);
         margin-bottom: 8px;
         font-weight: bold;
-        color: #fff; /* 文字色を白に */
+        color: #fff;
       }
       .radio-group {
         display: flex;
@@ -190,7 +196,7 @@
       }
       .time-select-group select {
         flex: 1;
-        background-color: #3b3f4d; /* セレクトボックスの色を調整 */
+        background-color: #3b3f4d;
         color: #e0e0e0;
       }
       #utc-timer {
@@ -198,7 +204,7 @@
         text-align: center;
         margin-bottom: 15px;
         font-weight: bold;
-        color: #40c0ff; /* UTCタイマーの色を調整 */
+        color: #40c0ff;
       }
       #copy-button {
         margin-top: 10px;
@@ -316,7 +322,7 @@
           const div = document.createElement("div");
           div.className = "player-input-container";
           div.innerHTML = `
-            <button class="remove-player-btn" type="button">×</button>
+            <button class="remove-player-btn" type="button">－</button>
             <div class="input-row">
               <div class="input-group">
                 <input type="text" class="player-name" placeholder="プレイヤー ${playerCount}" />
