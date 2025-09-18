@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ホワイトアウトサバイバル 集結ツール</title>
+    <title>TOTカリキュレーター</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -138,8 +138,8 @@
       }
       .remove-player-btn {
         position: absolute;
-        top: -8px; /* 上に少しはみ出すように調整 */
-        right: -8px; /* 右に少しはみ出すように調整 */
+        top: -8px;
+        right: -8px;
         width: 24px;
         height: 24px;
         border-radius: 50%;
@@ -150,7 +150,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        border: 2px solid var(--background-color); /* 背景色と同じボーダーを追加 */
+        border: 2px solid var(--background-color);
         cursor: pointer;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
       }
@@ -210,13 +210,13 @@
         margin-top: 10px;
       }
       .player-input-container .input-row {
-        margin-top: 0px;
+          margin-top: 0px;
       }
       .player-input-container .input-row .input-group:first-child {
-        flex: 2;
+          flex: 2;
       }
       .player-input-container .input-row .input-group:last-child {
-        flex: 1.5;
+          flex: 1.5;
       }
     </style>
   </head>
@@ -224,12 +224,11 @@
     <div class="container">
       <div class="content-wrapper">
         <main id="page-main" class="page">
-          <h1 class="page-title">
-            ホワイトアウトサバイバル<br />集結攻撃ツール
-          </h1>
+          <h1 class="page-title">TOTカリキュレーター</h1>
           <div id="utc-timer"></div>
 
-          <div id="player-inputs"></div>
+          <div id="player-inputs">
+            </div>
 
           <button id="add-player-btn" class="btn btn-secondary">
             + プレイヤーを追加
@@ -238,19 +237,18 @@
           <div class="input-group" style="margin-top: 20px">
             <label>集結待機時間</label>
             <div class="radio-group">
-              <label
-                ><input type="radio" name="rally-time" value="300" checked />
-                5分</label
-              >
-              <label
-                ><input type="radio" name="rally-time" value="60" /> 1分</label
-              >
+              <label><input type="radio" name="rally-time" value="300" checked /> 5分</label>
+              <label><input type="radio" name="rally-time" value="60" /> 1分</label>
             </div>
           </div>
 
           <div class="input-group">
             <label for="arrival-time">目標着弾時間</label>
-            <input type="time" step="1" id="arrival-time" />
+            <input
+              type="time"
+              step="1"
+              id="arrival-time"
+            />
           </div>
 
           <div class="button-group">
@@ -259,18 +257,13 @@
           </div>
 
           <div id="result-area">
-            <ul id="result-list" class="result-list"></ul>
-            <button
-              id="copy-button"
-              class="btn btn-secondary"
-              style="display: none"
-            >
-              チャットにコピー
-            </button>
+            <ul id="result-list" class="result-list">
+              </ul>
+            <button id="copy-button" class="btn btn-secondary" style="display: none;">チャットにコピー</button>
           </div>
         </main>
       </div>
-      <footer class="footer">© ゲームツール</footer>
+      <footer class="footer">© KINNIKU-N</footer>
     </div>
 
     <script>
@@ -293,11 +286,7 @@
           const utcHours = now.getUTCHours();
           const utcMinutes = now.getUTCMinutes();
           const utcSeconds = now.getUTCSeconds();
-          utcTimerDisplay.textContent = `現在UTC時刻: ${String(
-            utcHours
-          ).padStart(2, "0")}:${String(utcMinutes).padStart(2, "0")}:${String(
-            utcSeconds
-          ).padStart(2, "0")}`;
+          utcTimerDisplay.textContent = `現在UTC時刻: ${String(utcHours).padStart(2, '0')}:${String(utcMinutes).padStart(2, '0')}:${String(utcSeconds).padStart(2, '0')}`;
         };
 
         // 1秒ごとにタイマーを更新
@@ -306,14 +295,11 @@
 
         // ドロップダウンのオプションを生成するヘルパー関数
         const createTimeOptions = (limit) => {
-          let options = "";
-          for (let i = 0; i <= limit; i++) {
-            options += `<option value="${i}">${String(i).padStart(
-              2,
-              "0"
-            )}</option>`;
-          }
-          return options;
+            let options = '';
+            for (let i = 0; i <= limit; i++) {
+                options += `<option value="${i}">${String(i).padStart(2, '0')}</option>`;
+            }
+            return options;
         };
 
         // プレイヤー入力フォームを生成する関数
@@ -355,144 +341,106 @@
           if (e.target.classList.contains("remove-player-btn")) {
             e.target.closest(".player-input-container").remove();
             // プレイヤー番号を振り直す
-            document
-              .querySelectorAll(".player-input-container")
-              .forEach((el, index) => {
-                el.querySelector(".player-name").placeholder = `プレイヤー ${
-                  index + 1
-                }`;
-              });
-            playerCount = document.querySelectorAll(
-              ".player-input-container"
-            ).length;
+            document.querySelectorAll('.player-input-container').forEach((el, index) => {
+                el.querySelector('.player-name').placeholder = `プレイヤー ${index + 1}`;
+            });
+            playerCount = document.querySelectorAll('.player-input-container').length;
           }
         });
 
         // 行軍時間を秒に変換する関数
         const getMarchingSeconds = (playerDiv) => {
-          const minutes = parseInt(
-            playerDiv.querySelector(".min-select").value
-          );
-          const seconds = parseInt(
-            playerDiv.querySelector(".sec-select").value
-          );
-          return minutes * 60 + seconds;
+            const minutes = parseInt(playerDiv.querySelector('.min-select').value);
+            const seconds = parseInt(playerDiv.querySelector('.sec-select').value);
+            return minutes * 60 + seconds;
         };
 
         // 時間文字列（HH:MM:SS）を秒に変換する関数
         const arrivalTimeToSeconds = (timeStr) => {
-          const parts = timeStr.split(":");
-          if (parts.length !== 3) return NaN;
-          const hours = parseInt(parts[0]);
-          const minutes = parseInt(parts[1]);
-          const seconds = parseInt(parts[2]);
-          if (
-            isNaN(hours) ||
-            isNaN(minutes) ||
-            isNaN(seconds) ||
-            hours < 0 ||
-            hours > 23 ||
-            minutes < 0 ||
-            minutes > 59 ||
-            seconds < 0 ||
-            seconds > 59
-          )
-            return NaN;
-          return hours * 3600 + minutes * 60 + seconds;
+            const parts = timeStr.split(':');
+            if (parts.length !== 3) return NaN;
+            const hours = parseInt(parts[0]);
+            const minutes = parseInt(parts[1]);
+            const seconds = parseInt(parts[2]);
+            if (isNaN(hours) || isNaN(minutes) || isNaN(seconds) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59 || seconds < 0 || seconds > 59) return NaN;
+            return hours * 3600 + minutes * 60 + seconds;
         };
 
         // 秒を時間文字列（HH:MM:SS）に変換する関数
         const secondsToTime = (totalSeconds) => {
-          const hours = Math.floor(totalSeconds / 3600) % 24;
-          const minutes = Math.floor((totalSeconds % 3600) / 60);
-          const seconds = totalSeconds % 60;
-          return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
-            2,
-            "0"
-          )}:${String(seconds).padStart(2, "0")}`;
+            const hours = Math.floor(totalSeconds / 3600) % 24;
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
         };
 
         // 計算ボタン
         calculateBtn.addEventListener("click", () => {
           resultList.innerHTML = "";
           calculatedResults = [];
-          const rallyTime = parseInt(
-            document.querySelector('input[name="rally-time"]:checked').value
-          );
+          const rallyTime = parseInt(document.querySelector('input[name="rally-time"]:checked').value);
           const arrivalSeconds = arrivalTimeToSeconds(arrivalTimeInput.value);
 
           if (isNaN(arrivalSeconds)) {
             alert("有効な目標着弾時間を入力してください (HH:MM:SS)。");
-            copyButton.style.display = "none";
+            copyButton.style.display = 'none';
             return;
           }
 
           const players = document.querySelectorAll(".player-input-container");
           players.forEach((playerDiv, index) => {
             const nameInput = playerDiv.querySelector(".player-name");
-
+            
             const playerName = nameInput.value || `プレイヤー ${index + 1}`;
             const marchingSeconds = getMarchingSeconds(playerDiv);
 
             // 計算
             let departureSeconds = arrivalSeconds - marchingSeconds - rallyTime;
-
+            
             // 日付をまたぐ場合の調整
             if (departureSeconds < 0) {
               departureSeconds += 24 * 3600;
             }
 
             const departureTimeFormatted = secondsToTime(departureSeconds);
-            calculatedResults.push({
-              name: playerName,
-              time: departureTimeFormatted,
-            });
+            calculatedResults.push({ name: playerName, time: departureTimeFormatted });
 
             const resultItem = document.createElement("li");
             resultItem.className = "result-item";
-
-            resultItem.textContent = `${
-              index + 1
-            }. ${playerName} の集結開始時間: ${departureTimeFormatted}`;
+            
+            resultItem.textContent = `${index + 1}. ${playerName} の集結開始時間: ${departureTimeFormatted}`;
             resultList.appendChild(resultItem);
           });
-
+          
           if (calculatedResults.length > 0) {
-            copyButton.style.display = "block";
+            copyButton.style.display = 'block';
           }
         });
 
         // リセットボタン
         resetBtn.addEventListener("click", () => {
-          playerInputsContainer.innerHTML = "";
+          playerInputsContainer.innerHTML = '';
           playerCount = 0;
           playerInputsContainer.appendChild(createPlayerInput());
-          arrivalTimeInput.value = "";
-          resultList.innerHTML = "";
-          copyButton.style.display = "none";
-          document.querySelector(
-            'input[name="rally-time"][value="300"]'
-          ).checked = true;
+          arrivalTimeInput.value = '';
+          resultList.innerHTML = '';
+          copyButton.style.display = 'none';
+          document.querySelector('input[name="rally-time"][value="300"]').checked = true;
         });
 
         // コピーボタン
-        copyButton.addEventListener("click", () => {
+        copyButton.addEventListener('click', () => {
           if (calculatedResults.length > 0) {
             const textToCopy = calculatedResults
-              .map((result) => `${result.name}：${result.time}`)
-              .join("\n");
-
-            navigator.clipboard
-              .writeText(textToCopy)
-              .then(() => {
-                alert("計算結果をコピーしました！");
-              })
-              .catch((err) => {
-                console.error("コピーに失敗しました:", err);
-                alert(
-                  "コピーに失敗しました。お手数ですが手動でコピーしてください。"
-                );
-              });
+              .map(result => `${result.name}：${result.time}`)
+              .join('\n');
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+              alert('計算結果をコピーしました！');
+            }).catch(err => {
+              console.error('コピーに失敗しました:', err);
+              alert('コピーに失敗しました。お手数ですが手動でコピーしてください。');
+            });
           }
         });
       });
