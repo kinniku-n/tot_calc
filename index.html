@@ -11,7 +11,6 @@
       rel="stylesheet"
     />
     <style>
-      /* --- デザイン設定 --- */
       :root {
         --primary-color: #4092ff;
         --secondary-color: #6c757d;
@@ -23,7 +22,6 @@
         --border-radius: 8px;
         --font-family: "Noto Sans JP", sans-serif;
       }
-      /* --- 基本レイアウト --- */
       html,
       body {
         margin: 0;
@@ -50,23 +48,30 @@
         padding: 15px;
         box-sizing: border-box;
         flex-grow: 1;
+        padding-bottom: 3.5rem; /* 下部バーと被らない余白 */
       }
       .page-title {
         text-align: center;
         color: #fff;
-        margin-top: 0;
-        margin-bottom: 16px;
+        margin: 0 0 16px;
         font-size: 1.3em;
       }
-      .footer {
-        text-align: center;
-        font-size: 0.8em;
-        color: #888;
-        padding: 10px;
+      .footer-bar {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background: #2a2d38;
         border-top: 1px solid var(--border-color);
-        flex-shrink: 0;
+        color: #fff;
+        text-align: center;
+        padding: 6px 4px;
+        font-size: 0.9em;
       }
-      /* --- UIコンポーネント --- */
+      .footer-subtext {
+        font-size: 0.7em;
+        color: #888;
+        margin-top: 2px;
+      }
       .input-group {
         margin-bottom: 8px;
       }
@@ -77,7 +82,6 @@
         font-size: 0.9em;
       }
       input[type="text"],
-      input[type="time"],
       select {
         padding: 9px;
         border: 1px solid var(--border-color);
@@ -118,14 +122,6 @@
       .btn:active {
         transform: scale(0.98);
         filter: brightness(0.9);
-      }
-      .link-button {
-        font-size: 0.9em;
-        color: var(--primary-color);
-        cursor: pointer;
-        border: none;
-        background: none;
-        padding: 5px;
       }
       .player-input-container {
         background-color: var(--surface-color);
@@ -171,59 +167,30 @@
         display: flex;
         gap: 20px;
       }
-      .radio-group input {
-        width: auto;
-      }
-      .radio-group label {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-weight: normal;
-        margin-bottom: 0;
-      }
       .input-row {
         display: flex;
         gap: 10px;
         align-items: flex-end;
       }
       .input-row .input-group {
-        flex: 1; /* flex-grow: 1, flex-shrink: 1, flex-basis: 0% */
+        flex: 1;
         margin-bottom: 0;
       }
       .time-select-group {
         display: flex;
         gap: 5px;
       }
-      .time-select-group select {
-        flex: 1;
-        background-color: #3b3f4d;
-        color: #e0e0e0;
-      }
-      #utc-timer {
-        font-size: 1.2em;
-        text-align: center;
-        margin-bottom: 15px;
-        font-weight: bold;
-        color: #40c0ff;
-      }
-      #copy-button {
-        margin-top: 10px;
-      }
-      .player-input-container .input-row {
-          margin-top: 0px;
-      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="content-wrapper">
-        <main id="page-main" class="page">
+        <main class="page">
           <h1 class="page-title">TOTカリキュレーター</h1>
-          <button id="call-to-action-btn" class="btn btn-primary">集結呼びかけ</button>
-          <div id="utc-timer"></div>
-
-          <div id="player-inputs">
-            </div>
+          <button id="call-to-action-btn" class="btn btn-primary">
+            集結呼びかけ
+          </button>
+          <div id="player-inputs"></div>
 
           <button id="add-player-btn" class="btn btn-secondary">
             + プレイヤーを追加
@@ -231,21 +198,23 @@
 
           <div class="input-group" style="margin-top: 20px">
             <label>集結待機時間</label>
-            <div class="radio-group">
-              <label><input type="radio" name="rally-time" value="300" checked /> 5分</label>
-              <label><input type="radio" name="rally-time" value="60" /> 1分</label>
+            <div class="radio-group" id="rally-time-radios">
+              <label
+                ><input type="radio" name="rally-time" value="300" checked />
+                5分</label
+              >
+              <label
+                ><input type="radio" name="rally-time" value="60" /> 1分</label
+              >
             </div>
           </div>
 
           <div class="input-group">
             <label>目標着弾時間 (HH:MM:SS)</label>
             <div class="time-select-group">
-                <select id="arrival-hour-select">
-                    </select>
-                <select id="arrival-minute-select">
-                    </select>
-                <select id="arrival-second-select">
-                    </select>
+              <select id="arrival-hour-select"></select>
+              <select id="arrival-minute-select"></select>
+              <select id="arrival-second-select"></select>
             </div>
           </div>
 
@@ -255,13 +224,23 @@
           </div>
 
           <div id="result-area">
-            <ul id="result-list" class="result-list">
-              </ul>
-            <button id="copy-button" class="btn btn-secondary" style="display: none;">チャットにコピー</button>
+            <ul id="result-list" class="result-list"></ul>
+            <button
+              id="copy-button"
+              class="btn btn-secondary"
+              style="display: none"
+            >
+              チャットにコピー
+            </button>
           </div>
         </main>
       </div>
-      <footer class="footer">KINNIKU-N</footer>
+    </div>
+
+    <!-- 固定フッター -->
+    <div class="footer-bar">
+      <div id="footer-timer">最短着弾時間 --:--:--（UTC時刻 --:--:--）</div>
+      <div class="footer-subtext">KINNIKU-N</div>
     </div>
 
     <script>
@@ -271,207 +250,178 @@
         const calculateBtn = document.getElementById("btn-calculate");
         const resetBtn = document.getElementById("btn-reset");
         const resultList = document.getElementById("result-list");
-        const utcTimerDisplay = document.getElementById("utc-timer");
         const copyButton = document.getElementById("copy-button");
-        const callToActionBtn = document.getElementById("call-to-action-btn");
-        
-        const arrivalHourSelect = document.getElementById("arrival-hour-select");
-        const arrivalMinuteSelect = document.getElementById("arrival-minute-select");
-        const arrivalSecondSelect = document.getElementById("arrival-second-select");
-
-        let playerCount = 0;
+        const rallyTimeRadios = document.getElementById("rally-time-radios");
+        const arrivalHourSelect = document.getElementById(
+          "arrival-hour-select"
+        );
+        const arrivalMinuteSelect = document.getElementById(
+          "arrival-minute-select"
+        );
+        const arrivalSecondSelect = document.getElementById(
+          "arrival-second-select"
+        );
+        const footerTimer = document.getElementById("footer-timer");
         let calculatedResults = [];
 
-        // UTCタイマーを更新する関数
-        const updateUTCTime = () => {
-          const now = new Date();
-          const utcHours = now.getUTCHours();
-          const utcMinutes = now.getUTCMinutes();
-          const utcSeconds = now.getUTCSeconds();
-          utcTimerDisplay.textContent = `現在UTC時刻: ${String(utcHours).padStart(2, '0')}:${String(utcMinutes).padStart(2, '0')}:${String(utcSeconds).padStart(2, '0')}`;
-        };
-
-        // 1秒ごとにタイマーを更新
-        setInterval(updateUTCTime, 1000);
-        updateUTCTime(); // 初回表示
-
-        // ドロップダウンのオプションを生成するヘルパー関数
         const createOptions = (limit) => {
-            let options = '';
-            for (let i = 0; i <= limit; i++) {
-                options += `<option value="${i}">${String(i).padStart(2, '0')}</option>`;
-            }
-            return options;
+          let options = "";
+          for (let i = 0; i <= limit; i++) {
+            options += `<option value="${i}">${String(i).padStart(
+              2,
+              "0"
+            )}</option>`;
+          }
+          return options;
         };
-
-        // 着弾時間のドロップダウンを初期化
         arrivalHourSelect.innerHTML = createOptions(23);
         arrivalMinuteSelect.innerHTML = createOptions(59);
         arrivalSecondSelect.innerHTML = createOptions(59);
 
-        // プレイヤー入力フォームを生成する関数
-        const createPlayerInput = () => {
-          playerCount++;
+        const getShortestArrivalTime = () => {
+          const players = document.querySelectorAll(".player-input-container");
+          const rallyTime = parseInt(
+            document.querySelector('input[name="rally-time"]:checked').value
+          );
+          let longestMarchTime = 0;
+          players.forEach((p) => {
+            const minutes =
+              parseInt(p.querySelector(".min-select")?.value) || 0;
+            const seconds =
+              parseInt(p.querySelector(".sec-select")?.value) || 0;
+            longestMarchTime = Math.max(
+              longestMarchTime,
+              minutes * 60 + seconds
+            );
+          });
+          const now = new Date();
+          const nowSec =
+            now.getUTCHours() * 3600 +
+            now.getUTCMinutes() * 60 +
+            now.getUTCSeconds();
+          return (nowSec + rallyTime + longestMarchTime) % (24 * 3600);
+        };
+
+        const updateFooter = () => {
+          const shortestArrival = getShortestArrivalTime();
+          const now = new Date();
+          const format = (sec) => {
+            const h = String(Math.floor(sec / 3600)).padStart(2, "0");
+            const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
+            const s = String(sec % 60).padStart(2, "0");
+            return `${h}:${m}:${s}`;
+          };
+          footerTimer.textContent = `最短着弾時間 ${format(
+            shortestArrival
+          )}（UTC時刻 ${String(now.getUTCHours()).padStart(2, "0")}:${String(
+            now.getUTCMinutes()
+          ).padStart(2, "0")}:${String(now.getUTCSeconds()).padStart(
+            2,
+            "0"
+          )}）`;
+        };
+
+        const createPlayerInput = (num) => {
           const div = document.createElement("div");
           div.className = "player-input-container";
           div.innerHTML = `
             <button class="remove-player-btn" type="button">－</button>
             <div class="input-row">
-              <div class="input-group">
-                <input type="text" class="player-name" placeholder="プレイヤー ${playerCount}" />
-              </div>
+              <div class="input-group"><input type="text" class="player-name" placeholder="プレイヤー ${num}" /></div>
               <div class="input-group">
                 <div class="time-select-group">
-                  <select class="marching-time min-select">
-                    ${createOptions(59)}
-                  </select>
-                  <select class="marching-time sec-select">
-                    ${createOptions(59)}
-                  </select>
+                  <select class="marching-time min-select">${createOptions(
+                    59
+                  )}</select>
+                  <select class="marching-time sec-select">${createOptions(
+                    59
+                  )}</select>
                 </div>
               </div>
-            </div>
-          `;
+            </div>`;
           return div;
         };
 
-        // 最初のプレイヤー入力フォームを追加
-        playerInputsContainer.appendChild(createPlayerInput());
+        const addPlayer = () => {
+          const newPlayer = createPlayerInput(
+            playerInputsContainer.children.length + 1
+          );
+          playerInputsContainer.appendChild(newPlayer);
+          addEventListeners(newPlayer);
+        };
 
-        // プレイヤー追加ボタン
-        addPlayerBtn.addEventListener("click", () => {
-          playerInputsContainer.appendChild(createPlayerInput());
-        });
-
-        // プレイヤー削除ボタン
-        playerInputsContainer.addEventListener("click", (e) => {
-          if (e.target.classList.contains("remove-player-btn")) {
-            e.target.closest(".player-input-container").remove();
-            // プレイヤー番号を振り直す
-            document.querySelectorAll('.player-input-container').forEach((el, index) => {
-                el.querySelector('.player-name').placeholder = `プレイヤー ${index + 1}`;
+        const addEventListeners = (element) => {
+          element
+            .querySelectorAll(".marching-time")
+            .forEach((sel) => sel.addEventListener("change", updateFooter));
+          element
+            .querySelector(".remove-player-btn")
+            .addEventListener("click", () => {
+              element.remove();
+              updateFooter();
             });
-            playerCount = document.querySelectorAll('.player-input-container').length;
-          }
-        });
-
-        // 行軍時間を秒に変換する関数
-        const getMarchingSeconds = (playerDiv) => {
-            const minutes = parseInt(playerDiv.querySelector('.min-select').value);
-            const seconds = parseInt(playerDiv.querySelector('.sec-select').value);
-            return minutes * 60 + seconds;
-        };
-        
-        // 着弾時間のドロップダウンから秒数を取得する関数
-        const getArrivalSeconds = () => {
-            const hours = parseInt(arrivalHourSelect.value);
-            const minutes = parseInt(arrivalMinuteSelect.value);
-            const seconds = parseInt(arrivalSecondSelect.value);
-            return hours * 3600 + minutes * 60 + seconds;
         };
 
-        // 秒を時間文字列（HH:MM:SS）に変換する関数
-        const secondsToTime = (totalSeconds) => {
-            const hours = Math.floor(totalSeconds / 3600) % 24;
-            const minutes = Math.floor((totalSeconds % 3600) / 60);
-            const seconds = totalSeconds % 60;
-            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-        };
+        addPlayer();
+        addPlayerBtn.addEventListener("click", addPlayer);
+        rallyTimeRadios.addEventListener("change", updateFooter);
 
-        // 計算ボタン
         calculateBtn.addEventListener("click", () => {
           resultList.innerHTML = "";
           calculatedResults = [];
-          const rallyTime = parseInt(document.querySelector('input[name="rally-time"]:checked').value);
-          const arrivalSeconds = getArrivalSeconds();
-
-          if (isNaN(arrivalSeconds)) {
-            alert("有効な目標着弾時間を入力してください (HH:MM:SS)。");
-            copyButton.style.display = 'none';
-            return;
-          }
-
-          const players = document.querySelectorAll(".player-input-container");
-          players.forEach((playerDiv, index) => {
-            const nameInput = playerDiv.querySelector(".player-name");
-            
-            const playerName = nameInput.value || `プレイヤー ${index + 1}`;
-            const marchingSeconds = getMarchingSeconds(playerDiv);
-
-            // 計算
-            let departureSeconds = arrivalSeconds - marchingSeconds - rallyTime;
-            
-            // 日付をまたぐ場合の調整
-            if (departureSeconds < 0) {
-              departureSeconds += 24 * 3600;
-            }
-
-            const departureTimeFormatted = secondsToTime(departureSeconds);
-            calculatedResults.push({ name: playerName, time: departureTimeFormatted });
-
-            const resultItem = document.createElement("li");
-            resultItem.className = "result-item";
-            
-            resultItem.textContent = `${index + 1}. ${playerName} の集結開始時間: ${departureTimeFormatted}`;
-            resultList.appendChild(resultItem);
-          });
-          
-          if (calculatedResults.length > 0) {
-            copyButton.style.display = 'block';
-          }
+          const rallyTime = parseInt(
+            document.querySelector('input[name="rally-time"]:checked').value
+          );
+          const arrivalSeconds =
+            parseInt(arrivalHourSelect.value) * 3600 +
+            parseInt(arrivalMinuteSelect.value) * 60 +
+            parseInt(arrivalSecondSelect.value);
+          document
+            .querySelectorAll(".player-input-container")
+            .forEach((p, idx) => {
+              const name =
+                p.querySelector(".player-name").value ||
+                `プレイヤー ${idx + 1}`;
+              const m = parseInt(p.querySelector(".min-select").value) || 0;
+              const s = parseInt(p.querySelector(".sec-select").value) || 0;
+              let dep = arrivalSeconds - (m * 60 + s) - rallyTime;
+              if (dep < 0) dep += 86400;
+              const hh = String(Math.floor(dep / 3600) % 24).padStart(2, "0");
+              const mm = String(Math.floor((dep % 3600) / 60)).padStart(2, "0");
+              const ss = String(dep % 60).padStart(2, "0");
+              calculatedResults.push(`${name}: ${hh}:${mm}:${ss}`);
+              const li = document.createElement("li");
+              li.className = "result-item";
+              li.textContent = `${name} の集結開始時間: ${hh}:${mm}:${ss}`;
+              resultList.appendChild(li);
+            });
+          copyButton.style.display = calculatedResults.length
+            ? "block"
+            : "none";
         });
 
-        // リセットボタン
         resetBtn.addEventListener("click", () => {
-          playerInputsContainer.innerHTML = '';
-          playerCount = 0;
-          playerInputsContainer.appendChild(createPlayerInput());
-          arrivalHourSelect.value = '0';
-          arrivalMinuteSelect.value = '0';
-          arrivalSecondSelect.value = '0';
-          resultList.innerHTML = '';
-          copyButton.style.display = 'none';
-          document.querySelector('input[name="rally-time"][value="300"]').checked = true;
+          playerInputsContainer.innerHTML = "";
+          addPlayer();
+          arrivalHourSelect.value = "0";
+          arrivalMinuteSelect.value = "0";
+          arrivalSecondSelect.value = "0";
+          resultList.innerHTML = "";
+          copyButton.style.display = "none";
+          document.querySelector(
+            'input[name="rally-time"][value="300"]'
+          ).checked = true;
+          updateFooter();
         });
 
-        // コピーボタン
-        copyButton.addEventListener('click', () => {
-          if (calculatedResults.length > 0) {
-            const textToCopy = calculatedResults
-              .map(result => `${result.name}：${result.time}`)
-              .join('\n');
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-              alert('計算結果をコピーしました！');
-            }).catch(err => {
-              console.error('コピーに失敗しました:', err);
-              alert('コピーに失敗しました。お手数ですが手動でコピーしてください。');
-            });
-          }
+        copyButton.addEventListener("click", () => {
+          navigator.clipboard
+            .writeText(calculatedResults.join("\n"))
+            .then(() => alert("コピーしました！"));
         });
-        
-        // 集結呼びかけボタン
-        callToActionBtn.addEventListener('click', () => {
-            const rallyText = `①集結を出す人は、目的地への行軍時間を確認しましょう！
 
-「攻撃」→「出征」ボタンの上の数字をチェック→出征せずに閉じて時間を報告🕐
-　(例)Aさん0:15、Bさん0:09
-
-②目的地まで遠い方(行軍時間が長い方)を基準に、AさんとBさんの差分を共有。
-　(例)Aさん+0秒、Bさん+4秒
-
-③画面左上のUTC時計を基準に出発時間と集結時間を決める。
-　UTC12:00:00出発の時
-　Aさん12:00:00発
-　Bさん12:00:04発`;
-            
-            navigator.clipboard.writeText(rallyText).then(() => {
-                alert('集結呼びかけの定型文をコピーしました！');
-            }).catch(err => {
-                console.error('コピーに失敗しました:', err);
-                alert('コピーに失敗しました。お手数ですが手動でコピーしてください。');
-            });
-        });
+        setInterval(updateFooter, 1000);
+        updateFooter();
       });
     </script>
   </body>
